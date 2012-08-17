@@ -1,0 +1,4 @@
+--- 
+:graphite_server: graphite.example.net
+:graphite_port: 2003
+
