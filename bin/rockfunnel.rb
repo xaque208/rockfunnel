@@ -18,7 +18,20 @@ post '/post-collectd' do
   raw = JSON.parse request.body.read
   exit 127 unless raw.is_a? Array
 
-  Slurry.pipe(Collectd2Graphite.convert(raw))
+  collectdData = Collectd2Graphite.raw_convert(raw)
+
+  collectdData.each do |d|
+    hash = Hash.new
+    hash[:hash] = Hash.new
+    d.keys.each do |k|
+      if k.to_s == "time"
+        hash[:time] = d[k]
+      else
+        hash[:hash][k] = d[k]
+      end
+    end
+    Slurry.push_to_redis(hash[:hash], hash[:time])
+  end
 
 end
 
