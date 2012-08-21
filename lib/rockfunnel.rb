@@ -12,7 +12,7 @@ module RockFunnel
     end
 
     def send (target,value,time)
-      line = "#{target} #{value} #{time}"
+      line = [target,value,time].join(" ")
       puts line
       @s.puts(line)
     end

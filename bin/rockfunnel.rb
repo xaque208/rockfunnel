@@ -11,6 +11,7 @@ require 'collectd2graphite'
 config = YAML::load(File.read('etc/rockfunnel.yaml'))
 
 set :port, 58765
+set :bind, '::0', '0.0.0.0'
 
 # Receives a json formatted hash
 post '/post-collectd' do
