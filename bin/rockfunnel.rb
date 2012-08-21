@@ -3,7 +3,7 @@
 require 'sinatra'
 require 'json'
 require 'yaml'
-require 'rockfunnel'
+#require 'rockfunnel'
 require 'slurry'
 require 'pp'
 require 'collectd2graphite'
