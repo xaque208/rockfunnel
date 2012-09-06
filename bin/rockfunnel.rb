@@ -43,8 +43,7 @@ post '/post-json' do
   raw = JSON.parse request.body.read
   exit 127 unless raw.is_a? Hash
 
-  Slurry.pipe(raw)
-
+  Slurry.push_to_redis(raw)
 end
 
 get '/report' do
