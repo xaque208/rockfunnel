@@ -34,6 +34,7 @@ post '/post-collectd' do
     Slurry.push_to_redis(hash[:hash], hash[:time])
   end
 
+  204
 end
 
 
@@ -42,8 +43,14 @@ post '/post-json' do
   request.body.rewind
   raw = JSON.parse request.body.read
   exit 127 unless raw.is_a? Hash
+  begin
+    Slurry.push_to_redis(raw)
+  rescue => e
+    puts e.message
+    puts e.backtrace.inspect
+  end
 
-  Slurry.push_to_redis(raw)
+  204
 end
 
 get '/report' do
