@@ -25,17 +25,8 @@ post '/post-collectd' do
   collectdData = Collectd2Graphite.raw_convert(raw)
 
   collectdData.each do |d|
-    hash = Hash.new
-    hash[:hash] = Hash.new
-    d.keys.each do |k|
-      if k.to_s == "time"
-        hash[:time] = d[k]
-      else
-        hash[:hash][k] = d[k]
-      end
-    end
-    Slurry::Storage.store(hash)
-    #Slurry.push_to_redis(hash[:hash], hash[:time])
+    s = Slurry::Data.new(d).data
+    Slurry::Storage.store(s)
   end
 
   204
@@ -58,21 +49,21 @@ end
 
 # Report stats on the cache
 get '/report' do
-  Slurry::Storage::Redis.report.to_json
+  Slurry::Storage.report.to_json
 end
 
 # Check out whats in the cache
 get '/inspect' do
-  Slurry::Storage::Redis.inspect.to_json
+  Slurry::Storage.inspect.to_json
 end
 
 # Drop everything in the cache
 get '/clean' do
-  Slurry::Storage::Redis.clean
+  Slurry::Storage.clean
 end
 
 # Write everything in the cache to graphite
 get '/flush' do
-  Slurry.flush
+  Slurry.flush(config[:graphite_server],config[:graphite_port])
 end
 
